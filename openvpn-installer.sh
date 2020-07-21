@@ -353,7 +353,10 @@ ifconfig-pool-persist ipp.txt" > /etc/openvpn/server.conf
 echo 'push "redirect-gateway def1 bypass-dhcp"' >> /etc/openvpn/server.conf
 
 if [[ "$deploy_CHOICE" == 1 ]]; then
-	# DNS
+	echo "push \"dhcp-option DNS $DNS1\"" >> /etc/openvpn/server.conf
+	echo "push \"dhcp-option DNS $DNS2\"" >> /etc/openvpn/server.conf
+
+else
 	case $DNS in
 		1) # Current system resolvers
 		# Locate the proper resolv.conf
@@ -424,11 +427,7 @@ if [[ "$deploy_CHOICE" == 1 ]]; then
 		fi
 		;;
 	esac
-else
-	echo 'push "dhcp-option DNS 8.8.8.8"' >>/etc/openvpn/server.conf
-	echo 'push "dhcp-option DNS 8.8.4.4"' >>/etc/openvpn/server.conf
 fi
-
 echo "keepalive 10 120
 cipher AES-256-CBC
 

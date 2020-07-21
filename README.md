@@ -24,25 +24,25 @@ The scripts assumes that there is NOT an instance of OpenVPN already installed o
 1. Download the installer script.
 
 	````
-	wget https://raw.githubusercontent.com/umairriaz82/openvpn-automated-installer/master/openvpn-installer.sh
+	sudo wget https://raw.githubusercontent.com/umairriaz82/openvpn-automated-installer/master/openvpn-installer.sh
 	````
 
 1. Make the script executable
 
 	````
-	chmod +x openvpn.sh
+	sudo chmod +x openvpn-installer.sh
 	````
 
-1. Run the script.
+1. Run the script (as root).
 
 	````
-	./openvpn.sh (as root)
+	./openvpn-installer.sh
 	````
 
-	or
+	or (running as a normal user)
 
 	````
-	sudo ./openvpn.sh (running as a normal user)
+	sudo ./openvpn-installer.sh
 	````
 
 
