@@ -54,7 +54,7 @@ The scripts assumes that there is NOT an instance of OpenVPN already installed o
 
 1. Let the installer finish. This may take a few minutes, as the installer generates a few keys to set up a certificate authority (CA) that is used to assign certificates to the clients.
 
-		![Finish](images/finish.png)
+	![Finish](images/finish.png)
 
 1. If the server you are installing this on is behind a firewall, be sure that you forward the external ports from the firewall to the ports on the server for the VPN. Optionally, if you want to be able to manage the VPN from outside the firewall, forward a port to 443 on the VPN Server.
 
