@@ -48,13 +48,13 @@ The scripts assumes that there is NOT an instance of OpenVPN already installed o
 
 	Once the script is executed, it will prompt you for Admin GUI Password, this will be the credentials used to manage clients on the Web GUI.  The second prompt will automatically detect your Public IP, however, it is highly recommended to use full host name (eg. myvpn.mycloud.com)
 
-	![Shell](images/shell.png)
+	![Shell](images/shell.PNG)
 
 1. Default option (1) will deploy OpenVPN server with default UDP, Port 1194 and Google DNS servers.  If you wish to choose change any of the parameters, Select Custom option, and you'll be prompted for Protocol type, Port and DNS.
 
 1. Let the installer finish. This may take a few minutes, as the installer generates a few keys to set up a certificate authority (CA) that is used to assign certificates to the clients.
 
-	![Finish](images/finish.png)
+	![Finish](images/finish.PNG)
 
 1. If the server you are installing this on is behind a firewall, be sure that you forward the external ports from the firewall to the ports on the server for the VPN. Optionally, if you want to be able to manage the VPN from outside the firewall, forward a port to 443 on the VPN Server.
 
