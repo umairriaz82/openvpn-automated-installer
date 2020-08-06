@@ -165,7 +165,7 @@ body {
                           			if [[ "$clientName" != "server" ]] ; then
                           				echo "<tr><td class=\"list\">$clientName</td>"
                                   echo "<td class=\"list\">"
-                                  ip=$(cat /etc/openvpn/openvpn-status.log | sed "s/OpenVPN CLIENT LIST//g" | grep $clientName | head -2 | cut -d, -f 1 | tail  -1)
+                                  ip=$(cat /etc/openvpn/ipp.txt | grep -w $clientName | cut -d, -f 2)
 
                                   if [ -z "$ip" ]
                                     then
@@ -179,7 +179,7 @@ body {
                                   bytesreceived=$(cat /etc/openvpn/openvpn-status.log | sed "s/OpenVPN CLIENT LIST//g" | grep $clientName | head -1 | cut -d, -f 3)
                                   if [ -z "$bytesreceived" ]
                                     then
-                                      echo "0"
+                                      echo "0 Bytes"
                                     else
 
                                     printf %.2f $(echo "$bytesreceived*0.000001" | bc -l); echo " MB"
