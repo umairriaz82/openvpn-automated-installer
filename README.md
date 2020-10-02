@@ -13,7 +13,7 @@ The scripts assumes that there is NOT an instance of OpenVPN already installed o
 ## Installing OpenVPN
 
 
-1. Pull up a terminal or SSH into the target server.
+1. Pull up a terminal or SSH into the target Linux (Debian/Ubuntu/Redhat) server.
 
 1. Logon as root
 
