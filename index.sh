@@ -166,7 +166,7 @@ body {
                           			if [[ "$clientName" != "server" ]] ; then
                           				echo "<tr><td class=\"list\">$clientName</td>"
                                   echo "<td class=\"list\">"
-                                  ip=$(cat /etc/openvpn/openvpn-status.log | sed "s/OpenVPN CLIENT LIST//g" | grep $clientName | head -2 | cut -d, -f 1 | tail  -1)
+                                  ip=$(cat /etc/openvpn/ipp.txt | grep $clientName | cut -d, -f 2)
 
                                   if [ -z "$ip" ]
                                     then
