@@ -238,11 +238,10 @@ body {
                                     else
                                       echo "<span style='color:red'>Not Connected</span>"
                                     fi
-                                  "</td>
-                                  <td>"
+                                  echo "</td><td>"
                                   lastlogin=$(cat /etc/openvpn/client-connected.log | grep $clientName | tail -1 | cut -d " " -f 1-2)
-                                  "</td>
-                                  </tr>"
+                                  echo $lastlogin
+                                  echo "</td></tr>"
 
                           			fi
                           		fi
