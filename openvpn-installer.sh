@@ -431,8 +431,8 @@ fi
 echo "keepalive 10 120
 cipher AES-256-CBC
 
-user nobody
-group $GROUPNAME
+#user nobody
+#group $GROUPNAME
 persist-key
 persist-tun
 status openvpn-status.log
