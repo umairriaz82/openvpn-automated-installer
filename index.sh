@@ -12,9 +12,13 @@ echo "<!doctype html>
 <meta name=\"author\" content=\"Umair Riaz\">
 <title>OpenVPN Serve Admin UI</title>
 
-<!-- Bootstrap core CSS -->
-<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css\" >
-<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css\">
+<meta charset=\"utf-8\">
+<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
+<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css\">
+<link rel=\"stylesheet\" href=\"https://use.fontawesome.com/releases/v5.6.3/css/all.css\" integrity=\"sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/\" crossorigin=\"anonymous\"></head>
+<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js\"></script>
+<script src=\"https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js\"></script>
+<script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js\"></script>
 <meta name=\"theme-color\" content=\"#563d7c\">
 
 
@@ -46,7 +50,7 @@ body {
   }
 }
 </style>
-
+<!-- Custom styles for this template -->
 </head>
 
 
@@ -62,8 +66,15 @@ body {
 <div class=\"collapse navbar-collapse\" id=\"navbarsExampleDefault\">
 <ul class=\"navbar-nav mr-auto\">
 </ul>
+<ul class=\"nav navbar-nav navbar-right\">
+<i style='color:white' class=\"fas fa-cog\"></i>&nbsp
+<a href='index.sh?option=reboot'><i style='color:white' class=\"fas fa-sync\"></i>&nbsp</a>
+<a href='index.sh?option=shutdown'><i style='color:white' class=\"fas fa-power-off\"></i>&nbsp</a>
+</ul>
 </div>
 </nav>
+
+
 
 <div class=\"container-fluid\">
     <div class=\"row\">
@@ -130,6 +141,21 @@ body {
             		# CRL is read with each client connection, when OpenVPN is dropped to nobody
             		echo "<div class=\"alert alert-success\" role=\"alert\">Client <span style='color:red'>$client</span> deleted.</div>"
             	;;
+              "reboot")
+                echo "reboooting"
+                systemctl restart openvpn@server
+              ;;
+              "shutdown")
+                echo "shutdown"
+                cd /etc/init.d/
+                pwd
+                systemctl status openvpn@server
+                echo "<br>"
+                echo "<br>"
+                /etc/init.d/openvpn stop
+                echo "<br>"
+                /etc/init.d/openvpn status
+              ;;
             esac
 
             NUMBEROFCLIENTS=$(tail -n +2 /etc/openvpn/easy-rsa/pki/index.txt | grep -c "^V")
@@ -154,6 +180,7 @@ body {
                                     <th class=\"list\">Revoke</th>
                                     <th class=\"list\">Download</th>
                                     <th class=\"list\">Status</th>
+                                    <th class=\"list\">Last Login</th>
                                 </tr>
                             </thead>
                             <tbody>"
@@ -228,6 +255,7 @@ body {
                                     fi
                                   echo "</td>"
 
+
                           				echo "<td class=\"list\"><a href='index.sh?option=revoke&client=$clientName'><span style='color:red' class='fa fa-trash' aria-hidden='true'></span></a></td>"
                           				echo "<td class=\"list\"><a target='_blank' href='download.sh?client=$clientName'><span style='color:black' class='fa fa-download' aria-hidden='true'></span></a></td>"
                                   echo "<td class=\"list\">"
@@ -237,7 +265,10 @@ body {
                                     else
                                       echo "<span style='color:red'>Not Connected</span>"
                                     fi
-                                  "</td></tr>"
+                                  "</td>"
+                                  lastlogin=$(cat /etc/openvpn/client-connected.log | grep $clientName | tail -1 | cut -d " " -f 1-2)
+                                  echo "<td class=\"list\">$lastlogin</td>
+                                  </tr>"
 
                           			fi
                           		fi
@@ -258,12 +289,7 @@ body {
 
 
 
-
-
-<script src=\"https://code.jquery.com/jquery-3.4.1.slim.min.js\" integrity=\"sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n\" crossorigin=\"anonymous\"></script>
-<script src=\"https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js\" integrity=\"sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo\" crossorigin=\"anonymous\"></script>
-<script src=\"https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js\" integrity=\"sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6\" crossorigin=\"anonymous\"></script>
-
 </body>
 </html>"
 exit 0
+
