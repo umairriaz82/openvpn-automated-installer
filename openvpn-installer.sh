@@ -431,13 +431,19 @@ fi
 echo "keepalive 10 120
 cipher AES-256-CBC
 
-user nobody
-group $GROUPNAME
+#user nobody
+#group $GROUPNAME
 persist-key
 persist-tun
 status openvpn-status.log
 verb 3
+script-security 2
+client-connect /etc/openvpn/clientConnected.sh
+client-disconnect /etc/openvpn/clientDisconnected.sh
 crl-verify crl.pem" >> /etc/openvpn/server.conf
+
+wget -O /etc/openvpn/clientConnected.sh https://raw.githubusercontent.com/umairriaz82/openvpn-automated-installer/master/clientConnected.sh
+wget -O /etc/openvpn/clientDisconnected.sh https://raw.githubusercontent.com/umairriaz82/openvpn-automated-installer/master/clientDisconnected.sh
 
 # Enable net.ipv4.ip_forward for the system
 sed -i '/\<net.ipv4.ip_forward\>/c\net.ipv4.ip_forward=1' /etc/sysctl.conf
