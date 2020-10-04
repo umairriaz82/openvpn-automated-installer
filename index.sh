@@ -154,6 +154,7 @@ body {
                                     <th class=\"list\">Revoke</th>
                                     <th class=\"list\">Download</th>
                                     <th class=\"list\">Status</th>
+                                    <th class=\"list\">Last Login</th>
                                 </tr>
                             </thead>
                             <tbody>"
@@ -237,7 +238,11 @@ body {
                                     else
                                       echo "<span style='color:red'>Not Connected</span>"
                                     fi
-                                  "</td></tr>"
+                                  "</td>
+                                  <td>"
+                                  lastlogin=$(cat /etc/openvpn/client-connected.log | grep $clientName | tail -1 | cut -d " " -f 1-2)
+                                  "</td>
+                                  </tr>"
 
                           			fi
                           		fi
