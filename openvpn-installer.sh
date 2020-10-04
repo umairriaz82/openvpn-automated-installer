@@ -287,10 +287,14 @@ fi
 if [[ $DNS == 2 ]]; then
 	installUnbound
 fi
+
 IP=$(ip addr | grep 'inet' | grep -v inet6 | grep -vE '127\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | grep -o -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | head -1)
 if [[ "$IP" = "" ]]; then
 	IP=$(wget -4qO- "http://whatismyip.akamai.com/")
 fi
+
+
+
 if [[ "$OS" = 'debian' ]]; then
 	apt-get update
 	apt-get install openvpn iptables openssl ca-certificates lighttpd -y
@@ -299,11 +303,13 @@ else
 	yum install epel-release -y
 	yum install openvpn iptables openssl wget ca-certificates lighttpd -y
 fi
+
 # An old version of easy-rsa was available by default in some openvpn packages
 if [[ -d /etc/openvpn/easy-rsa/ ]]; then
 	rm -rf /etc/openvpn/easy-rsa/
 fi
 # Get easy-rsa
+
 wget -O ~/EasyRSA-3.0.1.tgz "https://github.com/OpenVPN/easy-rsa/releases/download/3.0.1/EasyRSA-3.0.1.tgz"
 tar xzf ~/EasyRSA-3.0.1.tgz -C ~/
 mv ~/EasyRSA-3.0.1/ /etc/openvpn/
@@ -311,19 +317,25 @@ mv /etc/openvpn/EasyRSA-3.0.1/ /etc/openvpn/easy-rsa/
 chown -R root:root /etc/openvpn/easy-rsa/
 rm -rf ~/EasyRSA-3.0.1.tgz
 cd /etc/openvpn/easy-rsa/
+
 # Create the PKI, set up the CA, the DH params and the server + client certificates
 ./easyrsa init-pki
 ./easyrsa --batch build-ca nopass
 ./easyrsa gen-dh
 ./easyrsa build-server-full server nopass
+
 # ./easyrsa build-client-full $CLIENT nopass
 ./easyrsa gen-crl
+
 # Move the stuff we need
 cp pki/ca.crt pki/private/ca.key pki/dh.pem pki/issued/server.crt pki/private/server.key /etc/openvpn/easy-rsa/pki/crl.pem /etc/openvpn
+
 # CRL is read with each client connection, when OpenVPN is dropped to nobody
 chown nobody:$GROUPNAME /etc/openvpn/crl.pem
+
 # Generate key for tls-auth
 openvpn --genkey --secret /etc/openvpn/ta.key
+
 # Generate server.conf
 echo "port $PORT
 proto $PROTOCOL
@@ -339,9 +351,11 @@ topology subnet
 server 10.8.0.0 255.255.255.0
 ifconfig-pool-persist ipp.txt" > /etc/openvpn/server.conf
 echo 'push "redirect-gateway def1 bypass-dhcp"' >> /etc/openvpn/server.conf
+
 if [[ "$deploy_CHOICE" == 1 ]]; then
 	echo "push \"dhcp-option DNS $DNS1\"" >> /etc/openvpn/server.conf
 	echo "push \"dhcp-option DNS $DNS2\"" >> /etc/openvpn/server.conf
+
 else
 	case $DNS in
 		1) # Current system resolvers
@@ -416,6 +430,7 @@ else
 fi
 echo "keepalive 10 120
 cipher AES-256-CBC
+
 user nobody
 group $GROUPNAME
 persist-key
@@ -423,11 +438,13 @@ persist-tun
 status openvpn-status.log
 verb 3
 crl-verify crl.pem" >> /etc/openvpn/server.conf
+
 # Enable net.ipv4.ip_forward for the system
 sed -i '/\<net.ipv4.ip_forward\>/c\net.ipv4.ip_forward=1' /etc/sysctl.conf
 if ! grep -q "\<net.ipv4.ip_forward\>" /etc/sysctl.conf; then
 	echo 'net.ipv4.ip_forward=1' >> /etc/sysctl.conf
 fi
+
 # Avoid an unneeded reboot
 echo 1 > /proc/sys/net/ipv4/ip_forward
 if pgrep firewalld; then
@@ -476,6 +493,7 @@ if hash sestatus 2>/dev/null; then
 		fi
 	fi
 fi
+
 # And finally, restart OpenVPN
 if [[ "$OS" = 'debian' ]]; then
 	# Little hack to check for systemd
@@ -493,7 +511,10 @@ else
 		chkconfig openvpn on
 	fi
 fi
+
 # Try to detect a NATed connection and ask about it to potential LowEndSpirit users
+
+
 # client-common.txt is created so we have a template to add further users later
 echo "client
 dev tun
@@ -510,11 +531,14 @@ cipher AES-256-CBC
 setenv opt block-outside-dns
 key-direction 1
 verb 3" > /etc/openvpn/client-common.txt
+
 # Generates the custom client.ovpn
 mv /etc/openvpn/clients/ /etc/openvpn/clients.$$/
 mkdir /etc/openvpn/clients/
+
 #Setup the web server to use an self signed cert
 # mkdir /etc/openvpn/clients/
+
 #Set permissions for easy-rsa and open vpn to be modified by the web user.
 chown -R www-data:www-data /etc/openvpn/easy-rsa
 chown -R www-data:www-data /etc/openvpn/clients/
@@ -522,23 +546,31 @@ chmod -R 755 /etc/openvpn/
 chmod -R 777 /etc/openvpn/crl.pem
 chmod g+s /etc/openvpn/clients/
 chmod g+s /etc/openvpn/easy-rsa/
+
 #Generate a self-signed certificate for the web server
 mv /etc/lighttpd/ssl/ /etc/lighttpd/ssl.$$/
 mkdir /etc/lighttpd/ssl/
 openssl req -new -x509 -keyout /etc/lighttpd/ssl/server.pem -out /etc/lighttpd/ssl/server.pem -days 9999 -nodes -subj "/C=US/ST=California/L=San Francisco/O=example.com/OU=Ops Department/CN=example.com"
 chmod 744 /etc/lighttpd/ssl/server.pem
+
+
 #Configure the web server with the lighttpd.conf from GitHub
 mv /etc/lighttpd/lighttpd.conf /etc/lighttpd/lighttpd.conf.$$
 wget -O /etc/lighttpd/lighttpd.conf https://raw.githubusercontent.com/umairriaz82/openvpn-automated-installer/master/lighttpd.conf
+
 #install the webserver scripts
 rm /var/www/html/*
 wget -O /var/www/html/index.sh https://raw.githubusercontent.com/umairriaz82/openvpn-automated-installer/master/index.sh
+
 wget -O /var/www/html/download.sh https://raw.githubusercontent.com/umairriaz82/openvpn-automated-installer/master/download.sh
 chown -R www-data:www-data /var/www/html/
+
 #set the password file for the WWW logon
 echo "admin:$ADMINPASSWORD" >> /etc/lighttpd/.lighttpdpassword
+
 #restart the web server
 service lighttpd restart
+
 clear
 echo "$(tput setaf 2)*****************************************************************"
 echo "*               OpenVPN Server Successfully Installed           *"
@@ -548,6 +580,6 @@ echo "       To access Admin GUI, visit:  https://$HOST "
 echo "                 Username: admin"
 echo "                 Password: $ADMINPASSWORD"
 echo ""
-echo "       Make sure you open firewall ports 443(TCP) and $PORT($PROTOCOL)"
+echo "       Make sure you allow $PROTOCOL traffic on port $PORT"
 echo ""
 echo "*****************************************************************$(tput sgr 0)"
