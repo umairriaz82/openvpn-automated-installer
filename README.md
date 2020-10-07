@@ -3,10 +3,6 @@ OpenVPN Server Automated Installer
 
 OpenVPN is a one of the most popular VPN platforms for a lot of good reasons. It's free, open source, and there are clients for just about every platform imaginable. For these reasons, OpenVPN is the choice for organizations and individuals alike.
 
-There are dedicated appliances for OpenVPN that work well for enterprises, but for smaller organizations and individuals, these are overkill.  This little project grew out of a desire to create a simple, web based UI for managing OpenVPN while as well as creating a fully automated installer of the the software on a rather lower-powered Linux host, such as an entry level VM on Azure, a Virtual Private Server (VPS) or even a container.
-
-A special thanks goes out to the folks behind [openvpn-install](https://github.com/Nyr/openvpn-install) and [simple-openvpn-server](https://github.com/theonemule/simple-openvpn-server) for their wonderful project, which serves as an interactive installer on the command line. Much of the heavy lifting for the installer here is from the script there.
-
 The scripts assumes that there is NOT an instance of OpenVPN already installed on the machine and that port 443 is not in use by another web server for HTTPS. Likewise, this script was built for Redhat 6+ and current Debian/Ubuntu distros. It is important to note that server hosting openvpn must allow traffic on the port specified during openvpn server deployment.
 
 
@@ -58,7 +54,7 @@ The scripts assumes that there is NOT an instance of OpenVPN already installed o
 
 1. If the server you are installing this on is behind a firewall, be sure that you forward the external ports from the firewall to the ports on the server for the VPN. Optionally, if you want to be able to manage the VPN from outside the firewall, forward a port to 443 on the VPN Server.
 
-
+1. IMPORTANT:  REMEMBER TO ALLOW (OPEN FIREWALL PORTS) UDP TRAFFIC ON THE PORT YOU SELECTED DURING THE INSTALLATION AND ALSO OPEN PORT 443 (TCP) FOR THE WEB GUI.
 
 
 ## Managing Profiles
