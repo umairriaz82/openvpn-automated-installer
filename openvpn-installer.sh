@@ -564,9 +564,23 @@ chmod 744 /etc/lighttpd/ssl/server.pem
 mv /etc/lighttpd/lighttpd.conf /etc/lighttpd/lighttpd.conf.$$
 wget -O /etc/lighttpd/lighttpd.conf https://raw.githubusercontent.com/umairriaz82/openvpn-automated-installer/master/lighttpd.conf
 
+chmod --reference=client-connected.log ipp.txt
+
+chmod --reference=client-connected.log openvpn-status.log
+
+sudo apt-get install php-cgi 
+
+sudo sudo lighttpd-enable-mod fastcgi 
+sudo lighttpd-enable-mod fastcgi-php
+
+wget -O /etc/openvpn/easy-rsa/create_client.sh https://raw.githubusercontent.com/umairriaz82/openvpn-automated-installer/master/create_client.sh
+wget -O /etc/openvpn/easy-rsa/delete_client.sh https://raw.githubusercontent.com/umairriaz82/openvpn-automated-installer/master/delete_client.sh
+chmod +x /etc/openvpn/easy-rsa/create_client.sh
+chmod +x /etc/openvpn/easy-rsa/delete_client.sh
+
 #install the webserver scripts
 rm /var/www/html/*
-wget -O /var/www/html/index.sh https://raw.githubusercontent.com/umairriaz82/openvpn-automated-installer/master/index.sh
+wget -O /var/www/html/index.php https://raw.githubusercontent.com/umairriaz82/openvpn-automated-installer/master/index.php
 
 wget -O /var/www/html/download.sh https://raw.githubusercontent.com/umairriaz82/openvpn-automated-installer/master/download.sh
 chown -R www-data:www-data /var/www/html/
